@@ -4,17 +4,33 @@ from faker import Faker
 import random
 
 
-def generate_fake_data(n=20_000):
+def generate_fake_data():
     fake = Faker()
 
-    print(f'Generating {n} samples of fake data')
-    users = [(i, fake.name(), fake.email()) for i in range(1, int(n / 10 + 1))]
-    products = [(i, fake.word(), fake.word()) for i in range(1, int(n / 100 + 1))]
-    stores = [(i, fake.company(), fake.city()) for i in range(1, int(n / 50 + 1))]
-    purchases = [(i, fake.random_int(min=1, max=100), fake.random_int(min=1, max=20), fake.date_this_year())
-                 for i in range(1, int(n / 10 + 1))]
-    purchase_items = [(fake.random_int(min=1, max=100), fake.random_int(min=1, max=10), fake.random_int(min=1, max=10),
-                       round(random.uniform(10.0, 100.0), 2)) for _ in range(n)]
+    print(f'Generating samples of fake data...')
+    users = [(i, fake.name(), fake.email()) for i in range(1, 2_000)]
+    products = [(i, fake.word(), fake.word()) for i in range(1, 1_000)]
+    stores = [(i, fake.company(), fake.city()) for i in range(1, 50)]
+    purchases = [(i, fake.random_element(users)[0], fake.random_element(stores)[0], fake.date_this_year())
+                 for i in range(1, 200_000)]
+
+    # Generate purchase items and aggregate them by product_id within each purchase
+    purchase_items_dict = {}
+    for purchase_id, user_id, store_id, purchase_date in purchases:
+        num_items = random.randint(1, 10)
+        for _ in range(num_items):
+            product_id = fake.random_element(products)[0]
+            quantity = fake.random_int(min=1, max=10)
+            price = round(random.uniform(10.0, 100.0), 2)
+            if (purchase_id, product_id) in purchase_items_dict:
+                purchase_items_dict[(purchase_id, product_id)]['quantity'] += quantity
+                purchase_items_dict[(purchase_id, product_id)]['price'] = price  # Update price to latest one
+            else:
+                purchase_items_dict[(purchase_id, product_id)] = {'quantity': quantity, 'price': price}
+
+    # Convert the dictionary to a list for insertion
+    purchase_items = [(purchase_id, product_id, data['quantity'], data['price']) for (purchase_id, product_id), data in
+                      purchase_items_dict.items()]
 
     return users, products, stores, purchases, purchase_items
 
