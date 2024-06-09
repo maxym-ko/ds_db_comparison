@@ -35,7 +35,12 @@ pip install -r requirements.txt
 python init_db.py
 ```
 
-#### Step 2: Populate with fake data
+#### Step 2: (Optional) Clean tables
+```shell
+python populate_db.py
+```
+
+#### Step 3: Populate with fake data
 ```shell
 python populate_db.py
 ```
