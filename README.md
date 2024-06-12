@@ -37,7 +37,7 @@ python init_db.py
 
 #### Step 2: (Optional) Clean tables
 ```shell
-python populate_db.py
+python clean_db.py
 ```
 
 #### Step 3: Populate with fake data
