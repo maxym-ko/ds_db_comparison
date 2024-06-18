@@ -298,3 +298,9 @@ GROUP BY product1, product2, product3, product4
 ORDER BY count DESC
 LIMIT 10;
 ```
+
+### Cleaning up
+```shell
+dropdb purchases_db
+brew services stop postgresql
+```
